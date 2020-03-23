@@ -31,22 +31,24 @@ function App() {
       <div>
          <div className="text-center lg:grid lg:grid-cols-3">
             {counts &&
-               Object.keys(counts).map(key => (
+               (Object.keys(counts) as Array<
+                  'recovered' | 'deaths' | 'confirmed'
+               >).map(key => (
                   <Summary
                      title={`Total ${
                         {
                            confirmed: 'confirmados',
                            deaths: 'muertes',
                            recovered: 'recuperados'
-                        }[key as 'recovered' | 'deaths' | 'confirmed']
+                        }[key]
                      }`}
-                     count={counts[key as 'recovered' | 'deaths' | 'confirmed']}
+                     count={counts[key]}
                      color={
                         {
                            confirmed: 'yellow',
                            deaths: 'red',
                            recovered: 'green'
-                        }[key as 'recovered' | 'deaths' | 'confirmed']
+                        }[key]
                      }
                   />
                ))}
