@@ -26,18 +26,21 @@ function App() {
    );
    return (
       <div>
-         <div className="lg:grid lg:grid-cols-3">
+         <div className="text-center lg:grid lg:grid-cols-3">
             <Summary
-               title="Esto son los putos infectados"
+               title="Total Confirmados"
                count={countConfirmed ? countConfirmed : 0}
+               color="yellow"
             />
             <Summary
                title="Total Muertos"
                count={countDeath ? countDeath : 0}
+               color="red"
             />
             <Summary
                title="Total Recuperados"
                count={countRecovered ? countRecovered : 0}
+               color="green"
             />
          </div>
       </div>

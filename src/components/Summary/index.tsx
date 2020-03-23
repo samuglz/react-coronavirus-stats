@@ -1,11 +1,12 @@
 import React from 'react';
 import { SummaryProps } from './index.d';
 
-const Summary: React.FC<SummaryProps> = ({ count, title }) => {
+const Summary: React.FC<SummaryProps> = ({ count, title, color }) => {
+   const summaryStyle = `font-bold text-${color}-500 text-6xl`;
    return (
       <div>
-         <h5 className="text-sm">{title}</h5>
-         <span className="font-bold text-yellow-300 text-6xl">{count}</span>
+         <div className="text-sm">{title}</div>
+         <span className={summaryStyle}>{count}</span>
       </div>
    );
 };
