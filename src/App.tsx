@@ -12,36 +12,44 @@ function App() {
          setCountries(data);
       });
    }, []);
-   const countConfirmed = countries?.reduce(
-      (previousScore, currentScore) => previousScore + currentScore.confirmed,
-      0
+   const counts = countries?.reduce(
+      (acc, country) => {
+         return {
+            confirmed: acc.confirmed + country.confirmed,
+            deaths: acc.deaths + country.deaths,
+            recovered: acc.recovered + country.recovered
+         };
+      },
+      {
+         confirmed: 0,
+         deaths: 0,
+         recovered: 0
+      } as Pick<Country, 'recovered' | 'deaths' | 'confirmed'>
    );
-   const countDeath = countries?.reduce(
-      (previousScore, currentScore) => previousScore + currentScore.deaths,
-      0
-   );
-   const countRecovered = countries?.reduce(
-      (previousScore, currentScore) => previousScore + currentScore.recovered,
-      0
-   );
+
    return (
       <div>
          <div className="text-center lg:grid lg:grid-cols-3">
-            <Summary
-               title="Total Confirmados"
-               count={countConfirmed ? countConfirmed : 0}
-               color="yellow"
-            />
-            <Summary
-               title="Total Muertos"
-               count={countDeath ? countDeath : 0}
-               color="red"
-            />
-            <Summary
-               title="Total Recuperados"
-               count={countRecovered ? countRecovered : 0}
-               color="green"
-            />
+            {counts &&
+               Object.keys(counts).map(key => (
+                  <Summary
+                     title={`Total ${
+                        {
+                           confirmed: 'confirmados',
+                           deaths: 'muertes',
+                           recovered: 'recuperados'
+                        }[key as 'recovered' | 'deaths' | 'confirmed']
+                     }`}
+                     count={counts[key as 'recovered' | 'deaths' | 'confirmed']}
+                     color={
+                        {
+                           confirmed: 'yellow',
+                           deaths: 'red',
+                           recovered: 'green'
+                        }[key as 'recovered' | 'deaths' | 'confirmed']
+                     }
+                  />
+               ))}
          </div>
       </div>
    );
