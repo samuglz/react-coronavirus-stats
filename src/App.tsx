@@ -3,6 +3,7 @@ import './styles/tailwind.css';
 import { CountryApiService } from './services/CountryApiService';
 import { Country } from './Models/Country';
 import Summary from './components/Summary';
+import List from './components/List';
 
 function App() {
    const [countries, setCountries] = useState<Country[]>();
@@ -29,12 +30,13 @@ function App() {
 
    return (
       <div>
-         <div className="text-center lg:grid lg:grid-cols-3">
+         <div className="text-center md:grid md:grid-cols-3">
             {counts &&
                (Object.keys(counts) as Array<
                   'recovered' | 'deaths' | 'confirmed'
-               >).map(key => (
+               >).map((key, index) => (
                   <Summary
+                     key={index}
                      title={`Total ${
                         {
                            confirmed: 'confirmados',
@@ -53,6 +55,7 @@ function App() {
                   />
                ))}
          </div>
+         {counts && <List countries={countries} />}
       </div>
    );
 }
