@@ -1,5 +1,5 @@
 export interface SummaryProps {
-   title: string;
+   icon: string;
    count: number;
    color: string;
 }

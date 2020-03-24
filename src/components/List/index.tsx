@@ -4,15 +4,10 @@ import ListElement from '../ListElement';
 
 const List: React.FC<ListProps> = ({ countries }) => {
    return (
-      <div>
-         <div className="text-center">
-            Listado de confirmados, muertes y recuperados por provincias
-         </div>
-         <div>
-            {countries?.map((country, index) => {
-               return <ListElement key={index} country={country} />;
-            })}
-         </div>
+      <div className="overflow-y-scroll" style={{ height: '60vh' }}>
+         {countries?.map((country, index) => {
+            return <ListElement key={index} country={country} />;
+         })}
       </div>
    );
 };
