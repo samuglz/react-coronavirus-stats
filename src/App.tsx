@@ -80,6 +80,22 @@ function App() {
                      onChange={e => {
                         setFilteredCountries(
                            countries?.filter(country => {
+                              if (country.provinceState) {
+                                 if (
+                                    country.provinceState
+                                       .toLowerCase()
+                                       .startsWith(e.target.value.toLowerCase())
+                                 ) {
+                                    return country.provinceState
+                                       .toLowerCase()
+                                       .startsWith(
+                                          e.target.value.toLowerCase()
+                                       );
+                                 }
+                                 return country.countryRegion
+                                    .toLowerCase()
+                                    .startsWith(e.target.value.toLowerCase());
+                              }
                               return country.countryRegion
                                  .toLowerCase()
                                  .startsWith(e.target.value.toLowerCase());
