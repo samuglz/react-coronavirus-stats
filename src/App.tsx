@@ -8,11 +8,20 @@ import List from './components/List';
 function App() {
    const [countries, setCountries] = useState<Country[]>();
    const [filteredCountries, setFilteredCountries] = useState<Country[]>();
+   const refreshTime = 3600000; // 1 HORA
    useEffect(() => {
       const apiService = new CountryApiService();
       apiService.getCountriesFromApi().then(data => {
          setCountries(data);
          setFilteredCountries(data);
+         setInterval(() => {
+            // console.log('DENTRO DEL INTERVAL');
+            const apiService = new CountryApiService();
+            apiService.getCountriesFromApi().then(data => {
+               setCountries(data);
+               setFilteredCountries(data);
+            });
+         }, refreshTime);
       });
    }, []);
    const counts = countries?.reduce(
