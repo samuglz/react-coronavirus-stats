@@ -8,6 +8,7 @@ import List from './components/List';
 function App() {
    const [countries, setCountries] = useState<Country[]>();
    const [filteredCountries, setFilteredCountries] = useState<Country[]>();
+
    const refreshTime = 3600000; // 1 HORA
    useEffect(() => {
       const apiService = new CountryApiService();
@@ -24,6 +25,31 @@ function App() {
          }, refreshTime);
       });
    }, []);
+
+   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFilteredCountries(
+         countries?.filter(country => {
+            if (country.provinceState) {
+               if (
+                  country.provinceState
+                     .toLowerCase()
+                     .startsWith(e.target.value.toLowerCase())
+               ) {
+                  return country.provinceState
+                     .toLowerCase()
+                     .startsWith(e.target.value.toLowerCase());
+               }
+               return country.countryRegion
+                  .toLowerCase()
+                  .startsWith(e.target.value.toLowerCase());
+            }
+            return country.countryRegion
+               .toLowerCase()
+               .startsWith(e.target.value.toLowerCase());
+         })
+      );
+   };
+
    const counts = countries?.reduce(
       (acc, country) => {
          return {
@@ -77,31 +103,7 @@ function App() {
                      name="search-input"
                      className="shadow appearance-none border border-gray-700 rounded w-3/4 lg:w-3/5 py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
                      placeholder="Search by Country"
-                     onChange={e => {
-                        setFilteredCountries(
-                           countries?.filter(country => {
-                              if (country.provinceState) {
-                                 if (
-                                    country.provinceState
-                                       .toLowerCase()
-                                       .startsWith(e.target.value.toLowerCase())
-                                 ) {
-                                    return country.provinceState
-                                       .toLowerCase()
-                                       .startsWith(
-                                          e.target.value.toLowerCase()
-                                       );
-                                 }
-                                 return country.countryRegion
-                                    .toLowerCase()
-                                    .startsWith(e.target.value.toLowerCase());
-                              }
-                              return country.countryRegion
-                                 .toLowerCase()
-                                 .startsWith(e.target.value.toLowerCase());
-                           })
-                        );
-                     }}
+                     onChange={e => handleChange(e)}
                   />
                </div>
                {filteredCountries?.length === 0 ? (
