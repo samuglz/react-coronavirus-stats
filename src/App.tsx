@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './styles/tailwind.css';
 import { CountryApiService } from './services/CountryApiService';
 import { Country } from './Models/Country';
@@ -8,6 +8,7 @@ import List from './components/List';
 function App() {
    const [countries, setCountries] = useState<Country[]>();
    const [filteredCountries, setFilteredCountries] = useState<Country[]>();
+   const inputSearch = useRef<HTMLInputElement>(null);
 
    const refreshTime = 3600000; // 1 HORA
    useEffect(() => {
@@ -29,25 +30,17 @@ function App() {
    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setFilteredCountries(
          countries?.filter(country => {
-            if (country.provinceState) {
-               if (
-                  country.provinceState
-                     .toLowerCase()
-                     .startsWith(e.target.value.toLowerCase())
-               ) {
-                  return country.provinceState
-                     .toLowerCase()
-                     .startsWith(e.target.value.toLowerCase());
-               }
-               return country.countryRegion
-                  .toLowerCase()
-                  .startsWith(e.target.value.toLowerCase());
-            }
-            return country.countryRegion
+            return country.combinedKey
                .toLowerCase()
-               .startsWith(e.target.value.toLowerCase());
+               .includes(e.target.value.toLowerCase());
          })
       );
+   };
+
+   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') {
+         inputSearch.current?.blur();
+      }
    };
 
    const counts = countries?.reduce(
@@ -104,6 +97,8 @@ function App() {
                      className="shadow appearance-none border border-gray-700 rounded w-3/4 lg:w-3/5 py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
                      placeholder="Search by Country"
                      onChange={e => handleChange(e)}
+                     onKeyPress={e => handleKeyPress(e)}
+                     ref={inputSearch}
                   />
                </div>
                {filteredCountries?.length === 0 ? (

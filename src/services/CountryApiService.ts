@@ -4,13 +4,15 @@ import axios from 'axios';
 
 const API_DATA = 'https://covid19.mathdro.id/api/confirmed';
 
-const toCountry = (json: Country): Country => ({
+const toCountry = (json: any): Country => ({
    provinceState: json.provinceState,
    countryRegion: json.countryRegion,
    confirmed: json.confirmed,
    recovered: json.recovered,
    deaths: json.deaths,
-   active: json.active
+   active: json.active,
+   city: json.admin2,
+   combinedKey: json.combinedKey.split(',').join(' -')
 });
 
 export class CountryApiService implements CountryService {
