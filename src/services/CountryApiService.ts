@@ -18,11 +18,19 @@ const toCountry = (json: any): Country => ({
 export class CountryApiService implements CountryService {
    getCountriesFromApi(): Promise<Country[]> {
       return axios.get(API_DATA).then(res => {
-         const countries: Country[] = [];
+         const countriesAPI: Country[] = [];
          res.data.forEach((country: any) => {
-            countries.push(toCountry(country));
+            countriesAPI.push(toCountry(country));
          });
-         return countries;
+         const seen = new Set();
+         const unDuplicatedCountries: Country[] = countriesAPI.filter(
+            country => {
+               const duplicate = seen.has(country.combinedKey);
+               seen.add(country.combinedKey);
+               return !duplicate;
+            }
+         );
+         return unDuplicatedCountries;
       });
    }
 }
