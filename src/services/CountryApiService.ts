@@ -14,23 +14,20 @@ const toCountry = (json: any): Country => ({
    city: json.admin2,
    combinedKey: json.combinedKey.split(',').join(' -')
 });
+const uniq = <T, U>(key: keyof T & U, array: T[]): T[] => {
+   const set: any = {};
+   array.forEach(item => (set[item[key]] = item));
+   return Object.values(set);
+};
 
 export class CountryApiService implements CountryService {
    getCountriesFromApi(): Promise<Country[]> {
-      return axios.get(API_DATA).then(res => {
-         const countriesAPI: Country[] = [];
-         res.data.forEach((country: any) => {
-            countriesAPI.push(toCountry(country));
-         });
-         const seen = new Set();
-         const unDuplicatedCountries: Country[] = countriesAPI.filter(
-            country => {
-               const duplicate = seen.has(country.combinedKey);
-               seen.add(country.combinedKey);
-               return !duplicate;
-            }
+      return axios
+         .get(API_DATA)
+         .then(({ data }) =>
+            uniq<Country, CountryFilter>('combinedKey', data.map(toCountry))
          );
-         return unDuplicatedCountries;
-      });
    }
 }
+
+type CountryFilter = 'combinedKey';
