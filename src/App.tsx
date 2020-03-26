@@ -10,7 +10,8 @@ import {
    faSortAmountDown,
    faVirus,
    faVirusSlash,
-   faSkull
+   faSkull,
+   faTimes
 } from '@fortawesome/free-solid-svg-icons';
 
 function App() {
@@ -57,7 +58,6 @@ function App() {
 
    const handleClick = (key: string) => {
       setFilteredCountries(orderBy(filteredCountries, key, 'desc'));
-      setCountries(orderBy(countries, key, 'desc'));
    };
 
    const counts = countries?.reduce(
@@ -122,7 +122,9 @@ function App() {
                      className="shadow appearance-none border-r border-t border-b border-gray-700 text-gray-700 bg-gray-300 py-2 px-3 rounded-r mb-3 leading-tight focus:outline-none focus:shadow-outline"
                      onClick={() => handleClickFilterMenu()}
                   >
-                     <FontAwesomeIcon icon={faSortAmountDown} />
+                     <FontAwesomeIcon
+                        icon={isFilterOpen ? faTimes : faSortAmountDown}
+                     />
                   </button>
                   {isFilterOpen && (
                      <div>
