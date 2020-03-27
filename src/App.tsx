@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './styles/tailwind.css';
+import './App.css';
 import { CountryApiService } from './services/CountryApiService';
 import { Country } from './Models/Country';
 import Summary from './components/Summary';
@@ -18,9 +19,10 @@ import {
 function App() {
    const [countries, setCountries] = useState<Country[]>();
    const [filteredCountries, setFilteredCountries] = useState<Country[]>();
-   const inputSearch = useRef<HTMLInputElement>(null);
    const [isFilterOpen, setIsFilterOpen] = useState(false);
    const [currentFilter, setCurrentFilter] = useState('confirmed');
+   const inputSearch = useRef<HTMLInputElement>(null);
+   const [initialState, setInitialState] = useState(true);
 
    const refreshTime = 3600000; // 1 HOUR
    useEffect(() => {
@@ -56,6 +58,7 @@ function App() {
 
    const handleClickFilterMenu = () => {
       setIsFilterOpen(!isFilterOpen);
+      setInitialState(false);
    };
 
    const handleClick = (key: string) => {
@@ -79,7 +82,7 @@ function App() {
    );
 
    return (
-      <div className="bg-gray-700 text-white font-bold p-5 overflow-y-hidden h-screen">
+      <div className="bg-gray-700 text-white font-bold p-5 overflow-hidden h-screen">
          <div className="text-center gap-3 grid grid-cols-3">
             {counts &&
                (Object.keys(counts) as Array<
@@ -122,15 +125,73 @@ function App() {
                      ref={inputSearch}
                   />
                   <button
-                     className="shadow appearance-none border-r border-t border-b border-gray-700 text-gray-700 bg-gray-300 py-2 px-3 rounded-r mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                     className="w-16 shadow appearance-none border-r border-t border-b border-gray-700 text-gray-700 bg-gray-300 py-2 px-3 rounded-r mb-3 leading-tight focus:outline-none focus:shadow-outline"
                      onClick={() => handleClickFilterMenu()}
                   >
                      <FontAwesomeIcon
                         icon={isFilterOpen ? faTimes : faSortAmountDown}
                      />
                   </button>
-                  {isFilterOpen && (
-                     <div>
+                  {isFilterOpen ? (
+                     <div
+                        className={className({
+                           'pt-1': true,
+                           'h-5': true,
+                           customFadeIn: isFilterOpen
+                        })}
+                     >
+                        <form className="text-white inline-block">
+                           <fieldset className="" id="filter">
+                              {(Object.keys(counts) as Array<
+                                 'recovered' | 'deaths' | 'confirmed'
+                              >).map(key => (
+                                 <span
+                                    className="mx-6 md:mx-20"
+                                    id={key}
+                                    key={key}
+                                 >
+                                    <FontAwesomeIcon
+                                       icon={
+                                          {
+                                             confirmed: faVirus,
+                                             deaths: faSkull,
+                                             recovered: faVirusSlash
+                                          }[key]
+                                       }
+                                       className={className({
+                                          'text-yellow-500':
+                                             currentFilter === key &&
+                                             key === 'confirmed',
+                                          'text-red-500':
+                                             currentFilter === key &&
+                                             key === 'deaths',
+                                          'text-green-500':
+                                             currentFilter === key &&
+                                             key === 'recovered'
+                                       })}
+                                    />
+                                    <input
+                                       key={key}
+                                       className="ml-2"
+                                       type="radio"
+                                       name="filter"
+                                       onClick={() => handleClick(key)}
+                                       defaultChecked={currentFilter === key}
+                                    />
+                                 </span>
+                              ))}
+                           </fieldset>
+                        </form>
+                     </div>
+                  ) : (
+                     <div
+                        className={className({
+                           'pt-1': true,
+                           'h-5': true,
+                           customFadeOut: !isFilterOpen && !initialState,
+                           'opacity-0': initialState || !isFilterOpen
+                        })}
+                     >
                         <form className="text-white inline-block">
                            <fieldset className="" id="filter">
                               {(Object.keys(counts) as Array<
