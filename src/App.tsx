@@ -5,6 +5,7 @@ import { Country } from './Models/Country';
 import Summary from './components/Summary';
 import List from './components/List';
 import { orderBy } from 'lodash';
+import className from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
    faSortAmountDown,
@@ -19,6 +20,7 @@ function App() {
    const [filteredCountries, setFilteredCountries] = useState<Country[]>();
    const inputSearch = useRef<HTMLInputElement>(null);
    const [isFilterOpen, setIsFilterOpen] = useState(false);
+   const [currentFilter, setCurrentFilter] = useState('confirmed');
 
    const refreshTime = 3600000; // 1 HOUR
    useEffect(() => {
@@ -57,6 +59,7 @@ function App() {
    };
 
    const handleClick = (key: string) => {
+      setCurrentFilter(key);
       setFilteredCountries(orderBy(filteredCountries, key, 'desc'));
    };
 
@@ -128,7 +131,7 @@ function App() {
                   </button>
                   {isFilterOpen && (
                      <div>
-                        <form className="inline-block text-white">
+                        <form className="text-white inline-block">
                            <fieldset className="" id="filter">
                               {(Object.keys(counts) as Array<
                                  'recovered' | 'deaths' | 'confirmed'
@@ -146,6 +149,17 @@ function App() {
                                              recovered: faVirusSlash
                                           }[key]
                                        }
+                                       className={className({
+                                          'text-yellow-500':
+                                             currentFilter === key &&
+                                             key === 'confirmed',
+                                          'text-red-500':
+                                             currentFilter === key &&
+                                             key === 'deaths',
+                                          'text-green-500':
+                                             currentFilter === key &&
+                                             key === 'recovered'
+                                       })}
                                     />
                                     <input
                                        key={key}
@@ -153,6 +167,7 @@ function App() {
                                        type="radio"
                                        name="filter"
                                        onClick={() => handleClick(key)}
+                                       defaultChecked={currentFilter === key}
                                     />
                                  </span>
                               ))}
