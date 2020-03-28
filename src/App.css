@@ -25,3 +25,8 @@
       opacity: 0;
    }
 }
+
+.Padre {
+   padding: 20px;
+   border: 2px solid red;
+}
