@@ -1,7 +1,7 @@
 import React, { createContext, FC, useContext } from 'react';
 import { useLocalStore } from 'mobx-react-lite';
-import { AppStore } from '../stores/AppStore';
-import { RootStore } from '../stores/RootStore';
+import { AppStore } from '../../stores/AppStore';
+import { RootStore } from '../../stores/RootStore';
 interface AppStoreContext {
    appStore: AppStore;
 }

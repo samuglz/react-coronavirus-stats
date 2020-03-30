@@ -3,8 +3,7 @@ import { CountryService } from './CountryService';
 import axios from 'axios';
 import { uniq } from '../utils/Uniq';
 import { CountryFilter } from '../types/CountryFilter';
-
-const API_DATA = 'https://covid19.mathdro.id/api/confirmed';
+import { API_DATA } from '../configFile';
 
 const toCountry = (json: any): Country => ({
    provinceState: json.provinceState,
