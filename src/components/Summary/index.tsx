@@ -2,6 +2,7 @@ import React from 'react';
 import { SummaryProps } from './index.d';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { observer } from 'mobx-react-lite';
 
 const Summary: React.FC<SummaryProps> = ({ count, icon = faTimes, color }) => {
    const summaryStyle = `font-bold text-${color}-500 text-xl md:text-6xl`;
@@ -15,4 +16,4 @@ const Summary: React.FC<SummaryProps> = ({ count, icon = faTimes, color }) => {
    );
 };
 
-export default Summary;
+export default observer(Summary);

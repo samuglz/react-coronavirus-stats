@@ -1,45 +1,117 @@
-import { action, computed, observable } from 'mobx';
+import { action, computed, observable, runInAction } from 'mobx';
 import { RootStore } from './RootStore';
+import { Country } from '../Models/Country';
+import { CountryApiService } from '../services/CountryApiService';
 
-interface Person {
-   id: number;
-   name: string;
-   temperatura: number;
-   hijos?: Person[];
+interface Counts {
+   confirmed: number;
+   recovered: number;
+   deaths: number;
 }
 
-const byNoId = idToRemove => person => person.id !== idToRemove;
-const byId = idToRemove => person => person.id === idToRemove;
+// const [countries, setCountries] = useState<Country[]>();
+// const [filteredCountries, setFilteredCountries] = useState<Country[]>();
+// const [currentFilter, setCurrentFilter] = useState('confirmed');
+// const [initialState, setInitialState] = useState(true);
+// const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+// const byNoId = idToRemove => person => person.id !== idToRemove;
+// const byId = idToRemove => person => person.id === idToRemove;
 
 export class AppStore {
    private rootStore: RootStore;
 
-   @observable
-   muertes: number;
+   private calculateCounts() {
+      this.countries.forEach(country => {
+         this.counts.confirmed += country.confirmed;
+         this.counts.deaths += country.deaths;
+         this.counts.recovered += country.recovered;
+      });
+   }
 
    @observable
-   confirmadas: Person[];
+   countries: Country[];
 
    @observable
-   recuperados: number;
+   filteredCountries: Country[];
 
+   @observable
+   currentOrder: string;
+
+   @observable
+   isInitialState: boolean;
+
+   @observable
+   isFilterOpen: boolean;
+
+   @observable
+   counts: Counts;
 
    @computed
    get activos() {
-      return this.confirmadas.length - this.muertes + this.recuperados;
+      return 'hola';
    }
+
+   @observable
+   state: 'pending' | 'done' | 'error';
 
    constructor(rootStore: RootStore) {
       this.rootStore = rootStore;
-      this.muertes = 10;
-      this.confirmadas = [];
-      this.recuperados = 0;
+      this.counts = {
+         confirmed: 0,
+         deaths: 0,
+         recovered: 0
+      };
+      this.countries = [];
+      this.filteredCountries = [];
+      this.currentOrder = 'confirmed';
+      this.isInitialState = true;
+      this.isFilterOpen = false;
+      this.state = 'pending';
    }
 
    @action
-   incrementDeath() {
-      this.muertes++;
+   async getCountriesFromApi() {
+      this.countries = [];
+      this.state = 'pending';
+      try {
+         const countryApiService = new CountryApiService();
+         const countries = await countryApiService.getCountriesFromApi();
+         runInAction(() => {
+            this.countries = countries;
+            this.calculateCounts();
+            this.filteredCountries = countries;
+            this.state = 'done';
+         });
+      } catch (error) {
+         runInAction(() => {
+            this.state = 'error';
+         });
+      }
    }
+
+   @action
+   setCurrentOrder(key: string) {
+      this.currentOrder = key;
+   }
+
+   @action
+   toggleInitialState() {
+      this.isInitialState = !this.isInitialState;
+   }
+
+   @action
+   toggleFilterOpen() {
+      this.isFilterOpen = !this.isFilterOpen;
+   }
+
+   @action
+   setFilteredCountries(countries: Country[]) {
+      this.filteredCountries = countries;
+   }
+
+   @action
+   incrementDeath() {}
 
    /**
     * @deprecated
@@ -49,38 +121,32 @@ export class AppStore {
       throw new Error('Not use');
    }
 
-   @action
-   incrementRecover() {
-      this.recuperados++;
-   }
+   // @action
+   // incrementRecover() {
+   //    this.recuperados++;
+   // }
 
    @action
    addConfirmadas() {
-      if (this.rootStore.loginStore.isAdmin) {
-         this.confirmadas.push({
-            id: Math.random(),
-            name: 'John Doe' + Math.random(),
-            temperatura: 10
-         });
-      }
+      // this.confirmadas.push({
+      //    id: Math.random(),
+      //    name: 'John Doe' + Math.random(),
+      //    temperatura: 10
+      // });
    }
 
    @action
    removeConfirmadas(idToRemove: number) {
-      this.confirmadas = this.confirmadas.filter(byNoId(idToRemove));
+      // this.confirmadas = this.confirmadas.filter(byNoId(idToRemove));
    }
 
    @action
    increaseDegreesByPerson(increase: number) {
-      return (person: Person) => this.increaseDegrees(person.id, increase);
+      // return (person: Person) => this.increaseDegrees(person.id, increase);
    }
 
    @action
    increaseDegrees(idToIncrease: number, increase: number = 2) {
-      this.confirmadas.find(byId(idToIncrease))!.temperatura += 2;
+      // this.confirmadas.find(byId(idToIncrease))!.temperatura += 2;
    }
 }
-
-
-
-
