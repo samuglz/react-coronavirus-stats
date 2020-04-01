@@ -5,6 +5,8 @@ export interface Country {
    deaths: number;
    active: number;
    combinedKey: string;
+   lat?: number;
+   long?: number;
    provinceState?: string;
    city?: string;
 }

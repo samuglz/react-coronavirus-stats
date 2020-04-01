@@ -2,6 +2,7 @@ import { action, observable, runInAction } from 'mobx';
 import { RootStore } from './RootStore';
 import { Country } from '../Models/Country';
 import { CountryApiService } from '../services/CountryApiService';
+import { uniq } from '../utils/Uniq';
 
 interface Counts {
    confirmed: number;
@@ -14,6 +15,9 @@ export class AppStore {
 
    @observable
    countries: Country[];
+
+   @observable
+   globalCountries: Country[];
 
    @observable
    filteredCountries: Country[];
@@ -46,6 +50,7 @@ export class AppStore {
       this.isInitialState = true;
       this.state = 'pending';
       this.isFilterOpen = false;
+      this.globalCountries = [];
    }
 
    @action
@@ -58,6 +63,7 @@ export class AppStore {
          runInAction(() => {
             this.countries = countries;
             this.calculateTotalCounts();
+            this.getGlobalCountries();
             this.filteredCountries = countries;
             this.state = 'done';
          });
@@ -93,6 +99,31 @@ export class AppStore {
          this.counts.confirmed += country.confirmed;
          this.counts.deaths += country.deaths;
          this.counts.recovered += country.recovered;
+      });
+   }
+
+   private getGlobalCountries() {
+      const ungeneralCountries = uniq(
+         'countryRegion',
+         this.countries.filter(
+            country => country.combinedKey !== country.countryRegion
+         )
+      );
+
+      const countryApiService = new CountryApiService();
+
+      ungeneralCountries.forEach(country => {
+         countryApiService
+            .getUngeneralCountryData(country)
+            .then(country => {
+               this.globalCountries.push(country);
+            })
+            .catch(console.error);
+      });
+
+      this.countries.forEach(country => {
+         if (country.combinedKey === country.countryRegion)
+            this.globalCountries.push(country);
       });
    }
 }
