@@ -43,7 +43,7 @@ export const Mapa: FC = observer(() => {
                      color={'red'}
                      stroke={false}
                      fillOpacity={0.6}
-                     radius={3}
+                     radius={10}
                      // Math.floor(
                      //    (country.confirmed / appStore.maxConfirmed) *
                      //       (rangeRadius.max - rangeRadius.min) +
