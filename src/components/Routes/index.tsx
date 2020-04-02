@@ -8,7 +8,11 @@ const Routes = () => {
       <Switch>
          <Route exact path="/" component={Home} />
          <Route exact path="/map" component={Mapa} />
-         <Route path="*">{/* TODO: 404 COMPONENT */}</Route>
+         <Route path="*">
+            <div className="text-6xl w-screen h-screen flex justify-center items-center">
+               <h1>Error 404: Página no encontrada</h1>
+            </div>
+         </Route>
       </Switch>
    );
 };

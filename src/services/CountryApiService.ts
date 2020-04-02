@@ -34,9 +34,9 @@ export class CountryApiService implements CountryService {
             toCountry({
                provinceState: null,
                countryRegion: country.countryRegion,
-               confirmed: data.confirmed,
-               recovered: data.recovered,
-               deaths: data.deaths,
+               confirmed: data.confirmed.value,
+               recovered: data.recovered.value,
+               deaths: data.deaths.value,
                active: 0,
                city: null,
                combinedKey: country.countryRegion,

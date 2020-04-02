@@ -6,6 +6,7 @@ import { useAppContext } from './components/Store';
 import { observer } from 'mobx-react-lite';
 import { REFRESH_TIME } from './configFile';
 import Routes from './components/Routes';
+import Header from './components/Header';
 
 // TODO: HACER NAVBAR
 
@@ -21,9 +22,10 @@ function App() {
    }, []);
 
    return (
-      <>
+      <div>
+         <Header />
          <Routes />
-      </>
+      </div>
    );
 }
 

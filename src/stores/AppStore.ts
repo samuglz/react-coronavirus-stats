@@ -1,8 +1,9 @@
-import { action, observable, runInAction } from 'mobx';
+import { action, observable, runInAction, computed } from 'mobx';
 import { RootStore } from './RootStore';
 import { Country } from '../Models/Country';
 import { CountryApiService } from '../services/CountryApiService';
 import { uniq } from '../utils/Uniq';
+import { maxBy } from 'lodash';
 
 interface Counts {
    confirmed: number;
@@ -35,6 +36,9 @@ export class AppStore {
    counts: Counts;
 
    @observable
+   maxConfirmed: number;
+
+   @observable
    state: 'pending' | 'done' | 'error';
 
    constructor(rootStore: RootStore) {
@@ -51,6 +55,7 @@ export class AppStore {
       this.state = 'pending';
       this.isFilterOpen = false;
       this.globalCountries = [];
+      this.maxConfirmed = 0;
    }
 
    @action
@@ -102,7 +107,7 @@ export class AppStore {
       });
    }
 
-   private getGlobalCountries() {
+   private async getGlobalCountries() {
       const ungeneralCountries = uniq(
          'countryRegion',
          this.countries.filter(
@@ -111,6 +116,11 @@ export class AppStore {
       );
 
       const countryApiService = new CountryApiService();
+
+      // ungeneralCountries.forEach(async country => {
+      //    let pais = await countryApiService.getUngeneralCountryData(country);
+      //    this.globalCountries.push(pais);
+      // });
 
       ungeneralCountries.forEach(country => {
          countryApiService
@@ -125,5 +135,7 @@ export class AppStore {
          if (country.combinedKey === country.countryRegion)
             this.globalCountries.push(country);
       });
+
+      this.maxConfirmed = maxBy(this.globalCountries, 'confirmed').confirmed; // sale Italia en vez de US
    }
 }
