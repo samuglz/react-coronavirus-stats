@@ -136,6 +136,6 @@ export class AppStore {
             this.globalCountries.push(country);
       });
 
-      this.maxConfirmed = maxBy(this.globalCountries, 'confirmed').confirmed; // sale Italia en vez de US
+      // this.maxConfirmed = maxBy(this.globalCountries, 'confirmed').confirmed; // sale Italia en vez de US
    }
 }

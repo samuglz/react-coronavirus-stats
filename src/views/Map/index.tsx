@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { Map, TileLayer, CircleMarker, Tooltip } from 'react-leaflet';
 import { useAppContext } from '../../components/Store';
 import { observer } from 'mobx-react-lite';
+
 export const Mapa: FC = observer(() => {
    const center = [51.505, -0.09];
 
@@ -31,10 +32,13 @@ export const Mapa: FC = observer(() => {
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright%22%3EOpenStreetMap</a> contributors'
             // noWrap="true" //PENDIENTE EXPLICACION RAUL
          />
-         {console.log(appStore.maxConfirmed)}
+         {/* {console.log(appStore.maxConfirmed)} */}
          {appStore.globalCountries.length !== 0 &&
             appStore.globalCountries.map((country, index) => {
+               if (!country.lat || !country.long) return null;
+
                const position = [country.lat, country.long];
+
                return (
                   // TODO: FIX ZOOM-OUT
                   <CircleMarker
